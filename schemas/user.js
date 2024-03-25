@@ -1,4 +1,5 @@
 import { GraphQLError } from "graphql";
+import validator from "validator";
 
 const typeDefs = `#graphql
     type User {
@@ -47,10 +48,37 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: (_, { name, username }) => {
-      const newUser = { id, name, username };
+    register: (_, { name, username, email, password }) => {
+      if (!validator.isEmail(email)) {
+        throw new GraphQLError("Invalid email format");
+      }
+
+      if (!validator.isLength(password, { min: 5 })) {
+        throw new GraphQLError("Password must be at least 5 characters long");
+      }
+
+      const existingUser = users.find(
+        (user) => user.username === username || user.email === email
+      );
+      if (existingUser) {
+        throw new GraphQLError("Username or email already exists");
+      }
+
+      const newUser = { name, username, email, password };
       users.push(newUser);
       return newUser;
+    },
+    login: (_, { username, password }) => {
+      const user = Users.find((user) => user.username === username);
+      if (!user || user.password !== password) {
+        throw new GraphQLError("Invalid username or password", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+          },
+        });
+      }
+      const token = generateToken(user);
+      return token;
     },
   },
 };
