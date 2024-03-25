@@ -47,7 +47,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    addUser: (_, { name, username, email, password }) => {
+    addUser: (_, { name, username }) => {
       const newUser = { id, name, username };
       users.push(newUser);
       return newUser;
