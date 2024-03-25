@@ -9,12 +9,25 @@ const typeDefs = `#graphql
         password:String!
     }
 
+    input Register {
+        name: String
+        username: String!
+        email: String!
+        password:String!
+    }
+
+    input Login {
+        username: String!
+        password:String!
+    }
+
     type Query {
         users: [User]
         userById(id: ID): User
     }
     type Mutation {
-        addUser(name: String, username: String!, email: String!, password:String!): User
+        register(register:Register): User
+        login(login:Login): User
     }
 `;
 

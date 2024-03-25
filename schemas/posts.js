@@ -26,13 +26,33 @@ const typeDefs = `#graphql
         updatedAt: Date
     }
 
+    input AddPosts {
+        content: String!
+        tags: [String]
+        imgUrl: String
+        authorId: ID!
+        comments: [Comments]
+        likes: [Likes]
+    }
+
+    input AddComments {
+        content: String!
+        username: String!
+    }
+
+    input AddLikes {
+        username: String!
+    }
+
     type Query {
         posts: [Posts]
         postsById(id: ID): Posts
     }
     
     type Mutation {
-        addPosts(content: String!, tags: String): Posts
+        addPosts(addPosts:AddPosts): Posts
+        addComments(addComments:AddComments): Posts
+        addLikes(addLikes:AddLikes): Posts
     }
 `;
 
