@@ -1,5 +1,6 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 
 const uri = process.env.MONGODB_URI;
 console.log(uri);
@@ -12,6 +13,7 @@ const client = new MongoClient(uri, {
   },
 });
 
+const database = client.db("youtube");
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -27,3 +29,4 @@ async function run() {
   }
 }
 run().catch(console.dir);
+export default database;
