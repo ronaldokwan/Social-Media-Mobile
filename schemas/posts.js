@@ -58,8 +58,12 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    posts: () => posts,
-    postsById: (_, { id }) => {
+    posts: (_, __, contextValue) => {
+      contextValue.auth();
+      posts;
+    },
+    postsById: (_, { id }, contextValue) => {
+      contextValue.auth();
       if (!id) {
         throw new GraphQLError("No ID provided", {
           extensions: {
@@ -72,7 +76,8 @@ const resolvers = {
     },
   },
   Mutation: {
-    addPosts: (_, { content, tags }) => {
+    addPosts: (_, { content, tags }, contextValue) => {
+      contextValue.auth();
       const newPosts = { id: posts.length + 1, content, tags };
       posts.push(newPosts);
       return newPosts;

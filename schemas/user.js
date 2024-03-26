@@ -49,8 +49,12 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    users: () => User,
-    userById: (_, { id }) => {
+    users: (_, __, contextValue) => {
+      contextValue.auth();
+      User;
+    },
+    userById: (_, { id }, contextValue) => {
+      contextValue.auth();
       if (!id) {
         throw new GraphQLError("No ID provided", {
           extensions: {
@@ -61,7 +65,13 @@ const resolvers = {
       }
       return User.find((user) => user.id === id);
     },
+    getDetail: async (_, args, contextValue) => {
+      contextValue.auth();
+      const user = await User.getDetail(args.id);
+      return user;
+    },
   },
+
   Mutation: {
     register: (_, { name, username, email, password }) => {
       if (!validator.isEmail(email)) {

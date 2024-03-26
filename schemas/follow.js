@@ -27,8 +27,12 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    follows: () => follows,
-    followById: (_, { id }) => {
+    follows: (_, __, contextValue) => {
+      contextValue.auth();
+      follows;
+    },
+    followById: (_, { id }, contextValue) => {
+      contextValue.auth();
       if (!id) {
         throw new GraphQLError("No ID provided", {
           extensions: {
@@ -41,7 +45,8 @@ const resolvers = {
     },
   },
   Mutation: {
-    addFollow: (_, { name, username, email, password }) => {
+    addFollow: (_, { name, username, email, password }, contextValue) => {
+      contextValue.auth();
       const newFollow = { id, name, username };
       follows.push(newFollow);
       return newFollow;
