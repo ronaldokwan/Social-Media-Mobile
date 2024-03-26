@@ -31,8 +31,8 @@ const typeDefs = `#graphql
         tags: [String]
         imgUrl: String
         authorId: ID!
-        comments: [Comments]
-        likes: [Likes]
+        comments: [AddComments]
+        likes: [AddLikes]
     }
 
     input AddComments {
