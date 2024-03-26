@@ -3,7 +3,7 @@ import { database } from "../config/mongodb";
 
 class Follow {
   static followCollection() {
-    return database.collection("follows");
+    return database.collection("follow");
   }
 
   static async find() {

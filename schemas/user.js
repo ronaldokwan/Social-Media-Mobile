@@ -1,10 +1,18 @@
-import { GraphQLError } from "graphql";
 import validator from "validator";
-import User from "../models/user";
-import { signToken } from "../helpers/jwt";
+import User from "../models/user.js";
+import { signToken } from "../helpers/jwt.js";
+import { comparePassword } from "../helpers/bcrypt.js";
 
 const typeDefs = `#graphql
     type User {
+        _id: ID
+        name: String
+        username: String!
+        email: String!
+        password:String!
+    }
+
+    type UserFollow {
         _id: ID
         name: String
         username: String!
@@ -15,7 +23,6 @@ const typeDefs = `#graphql
     }
 
     type UserDetail {
-        _id: ID
         name: String
         username: String
         email: String
@@ -38,32 +45,30 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        users: [User]
+        user(name: String, username: String): UserDetail
         userById(id: ID): User
+        getDetail(id: ID): User
     }
+
     type Mutation {
-        register(register:Register): User
+        register(register:Register): UserDetail
         login(login:Login): Token
     }
 `;
 
 const resolvers = {
   Query: {
-    users: (_, __, contextValue) => {
+    user: async (_, { name, username }, contextValue) => {
       contextValue.auth();
-      User;
-    },
-    userById: (_, { id }, contextValue) => {
-      contextValue.auth();
-      if (!id) {
-        throw new GraphQLError("No ID provided", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-            http: { statusCode: 400 },
-          },
-        });
+      if (name && username) {
+        throw new Error("name or username only allowed");
+      } else if (name) {
+        return await User.findName(name);
+      } else if (username) {
+        return await User.findUsername(username);
+      } else {
+        throw new Error("name or username required");
       }
-      return User.find((user) => user.id === id);
     },
     getDetail: async (_, args, contextValue) => {
       contextValue.auth();
@@ -73,35 +78,36 @@ const resolvers = {
   },
 
   Mutation: {
-    register: (_, { name, username, email, password }) => {
+    register: async (_, { register }) => {
+      const { name, username, email, password } = register;
       if (!validator.isEmail(email)) {
-        throw new GraphQLError("Invalid email format");
+        throw new Error("Invalid email format");
       }
 
       if (!validator.isLength(password, { min: 5 })) {
-        throw new GraphQLError("Password must be at least 5 characters long");
+        throw new Error("Password must be at least 5 characters long");
       }
 
-      const existingUser = User.find(
-        (user) => user.username === username || user.email === email
-      );
-      if (existingUser) {
-        throw new GraphQLError("Username or email already exists");
+      const existingUsername = await User.findUsername(username);
+      const existingEmail = await User.findEmail(email);
+      if (existingUsername || existingEmail) {
+        throw new Error("Username or email already exists");
       }
 
-      const newUser = { name, username, email, password };
-      User.push(newUser);
-      return newUser;
+      await User.create({ name, username, email, password });
+      return { name, username, email };
     },
-    login: (_, { username, password }) => {
-      const user = User.find((user) => user.username === username);
-      if (!user || user.password !== password) {
-        throw new GraphQLError("Invalid username or password", {
-          extensions: {
-            code: "UNAUTHENTICATED",
-          },
-        });
-      }
+    login: async (_, { login }) => {
+      const { username, password } = login;
+      if (!username || !password)
+        throw new Error("Invalid username or password");
+
+      const user = await User.findUser(username);
+      if (!user) throw Error("Invalid username or password");
+
+      const checkPassword = comparePassword(password, user.password);
+      if (!checkPassword) throw { name: "Invalid email/password" };
+
       const token = {
         access_token: signToken({
           _id: user._id,
