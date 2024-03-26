@@ -1,5 +1,7 @@
 import { GraphQLError } from "graphql";
 import validator from "validator";
+import User from "../models/user";
+import { signToken } from "../helpers/jwt";
 
 const typeDefs = `#graphql
     type User {
@@ -8,6 +10,19 @@ const typeDefs = `#graphql
         username: String!
         email: String!
         password:String!
+        followerDetail: [UserDetail]
+        followingDetail: [UserDetail]
+    }
+
+    type UserDetail {
+        _id: ID
+        name: String
+        username: String
+        email: String
+    }
+
+    type Token {
+        access_token: String
     }
 
     input Register {
@@ -28,13 +43,13 @@ const typeDefs = `#graphql
     }
     type Mutation {
         register(register:Register): User
-        login(login:Login): User
+        login(login:Login): Token
     }
 `;
 
 const resolvers = {
   Query: {
-    users: () => users,
+    users: () => User,
     userById: (_, { id }) => {
       if (!id) {
         throw new GraphQLError("No ID provided", {
@@ -44,7 +59,7 @@ const resolvers = {
           },
         });
       }
-      return users.find((user) => user.id === id);
+      return User.find((user) => user.id === id);
     },
   },
   Mutation: {
@@ -57,7 +72,7 @@ const resolvers = {
         throw new GraphQLError("Password must be at least 5 characters long");
       }
 
-      const existingUser = users.find(
+      const existingUser = User.find(
         (user) => user.username === username || user.email === email
       );
       if (existingUser) {
@@ -65,11 +80,11 @@ const resolvers = {
       }
 
       const newUser = { name, username, email, password };
-      users.push(newUser);
+      User.push(newUser);
       return newUser;
     },
     login: (_, { username, password }) => {
-      const user = Users.find((user) => user.username === username);
+      const user = User.find((user) => user.username === username);
       if (!user || user.password !== password) {
         throw new GraphQLError("Invalid username or password", {
           extensions: {
@@ -77,7 +92,12 @@ const resolvers = {
           },
         });
       }
-      const token = generateToken(user);
+      const token = {
+        access_token: signToken({
+          _id: user._id,
+          username: user.username,
+        }),
+      };
       return token;
     },
   },
