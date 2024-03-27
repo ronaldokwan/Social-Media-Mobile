@@ -1,5 +1,6 @@
 import database from "../config/mongodb.js";
 import { ObjectId } from "mongodb";
+
 class Posts {
   static postsCollection() {
     return database.collection("posts");
@@ -49,6 +50,21 @@ class Posts {
       updatedAt: new Date(),
     };
     post.comments.push(comment);
+    _id = new ObjectId(String(_id));
+    await this.postsCollection().updateOne({ _id }, { $set: post });
+    return post;
+  }
+  static async createLikes({ _id, username }) {
+    const post = await this.findById(_id);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+    const like = {
+      username,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    post.likes.push(like);
     _id = new ObjectId(String(_id));
     await this.postsCollection().updateOne({ _id }, { $set: post });
     return post;

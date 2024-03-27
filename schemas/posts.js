@@ -1,4 +1,6 @@
 import Posts from "../models/posts.js";
+import redis from "../config/redis.js";
+
 const typeDefs = `#graphql
     type Posts {
         _id: ID
@@ -38,13 +40,13 @@ const typeDefs = `#graphql
 
     type Query {
         postsByDate: [Posts]
-        postsById(_id: ID): Posts
+        postsById(_id: ID!): Posts
     }
     
     type Mutation {
         addPosts(addPosts:AddPosts): Posts
         addComments(addComments:AddComments): Posts
-        addLikes: Posts
+        addLikes( _id: ID!): Posts
     }
 `;
 
@@ -52,8 +54,17 @@ const resolvers = {
   Query: {
     postsByDate: async (_, __, contextValue) => {
       contextValue.auth();
-      const posts = await Posts.findByDate();
-      return posts;
+
+      const redisPosts = await redis.get("posts");
+      if (redisPosts) {
+        console.log("from redis");
+        return JSON.parse(redisPosts);
+      } else {
+        console.log("from mongodb");
+        const posts = await Posts.findByDate();
+        await redis.set("posts", JSON.stringify(posts));
+        return posts;
+      }
     },
     postsById: async (_, { _id }, contextValue) => {
       contextValue.auth();
@@ -81,7 +92,7 @@ const resolvers = {
         imgUrl,
         authorId,
       });
-      console.log(posts);
+      await redis.del("posts");
       return posts;
     },
     addComments: async (_, { addComments }, contextValue) => {
@@ -95,6 +106,19 @@ const resolvers = {
         content,
         username,
       });
+      await redis.del("posts");
+      return posts;
+    },
+    addLikes: async (_, { _id }, contextValue) => {
+      const { username } = contextValue.auth();
+      if (!_id) {
+        throw new Error("post id is required");
+      }
+      const posts = await Posts.createLikes({
+        _id,
+        username,
+      });
+      await redis.del("posts");
       return posts;
     },
   },
