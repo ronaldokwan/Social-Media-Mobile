@@ -12,17 +12,18 @@ const typeDefs = `#graphql
         password:String!
     }
 
-    type UserFollow {
-        _id: ID
-        name: String
-        username: String!
-        email: String!
-        password:String!
-        followerDetail: [UserDetail]
-        followingDetail: [UserDetail]
-    }
+    # type UserFollow {
+    #     _id: ID
+    #     name: String
+    #     username: String!
+    #     email: String!
+    #     password:String!
+    #     followerDetail: [UserDetail]
+    #     followingDetail: [UserDetail]
+    # }
 
     type UserDetail {
+        _id: ID
         name: String
         username: String
         email: String
@@ -69,6 +70,18 @@ const resolvers = {
       } else {
         throw new Error("name or username required");
       }
+    },
+    userById: (_, { id }, contextValue) => {
+      contextValue.auth();
+      if (!id) {
+        throw new Error("No ID provided", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            http: { statusCode: 400 },
+          },
+        });
+      }
+      return follows.find((follow) => follow.id === id);
     },
     getDetail: async (_, args, contextValue) => {
       contextValue.auth();

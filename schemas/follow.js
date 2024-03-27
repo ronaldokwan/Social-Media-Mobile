@@ -1,4 +1,4 @@
-import { GraphQLError } from "graphql";
+import Follow from "../models/follow.js";
 
 const typeDefs = `#graphql
     type Follow {
@@ -10,7 +10,6 @@ const typeDefs = `#graphql
     }
 
     input AddFollow {
-        _id: ID
         followingId: ID
         followerId: ID
     }
@@ -34,7 +33,7 @@ const resolvers = {
     followById: (_, { id }, contextValue) => {
       contextValue.auth();
       if (!id) {
-        throw new GraphQLError("No ID provided", {
+        throw new Error("No ID provided", {
           extensions: {
             code: "BAD_USER_INPUT",
             http: { statusCode: 400 },
@@ -45,10 +44,13 @@ const resolvers = {
     },
   },
   Mutation: {
-    addFollow: (_, { name, username, email, password }, contextValue) => {
+    addFollow: async (_, { addFollow }, contextValue) => {
       contextValue.auth();
-      const newFollow = { id, name, username };
-      follows.push(newFollow);
+      const { followingId, followerId } = addFollow;
+      if (!followingId && !followerId) {
+        throw new Error("followingId and followerId is required");
+      }
+      const newFollow = await Follow.create({ followingId, followerId });
       return newFollow;
     },
   },
