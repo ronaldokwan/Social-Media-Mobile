@@ -12,15 +12,14 @@ const typeDefs = `#graphql
         password:String!
     }
 
-    # type UserFollow {
-    #     _id: ID
-    #     name: String
-    #     username: String!
-    #     email: String!
-    #     password:String!
-    #     followerDetail: [UserDetail]
-    #     followingDetail: [UserDetail]
-    # }
+    type UserFollow {
+        _id: ID
+        name: String
+        username: String!
+        email: String!
+        followerDetail: [UserDetail]
+        followingDetail: [UserDetail]
+    }
 
     type UserDetail {
         _id: ID
@@ -48,7 +47,7 @@ const typeDefs = `#graphql
     type Query {
         user(name: String, username: String): UserDetail
         userById(_id: ID): User
-        getDetail(_id: ID): User
+        userDetail(username: String): UserFollow
     }
 
     type Mutation {
@@ -80,9 +79,12 @@ const resolvers = {
       if (!user) throw new Error("User not found");
       return user;
     },
-    getDetail: async (_, args, contextValue) => {
+    userDetail: async (_, { username }, contextValue) => {
       contextValue.auth();
-      const user = await User.getDetail(args.id);
+      if (!username) {
+        throw new Error("Username required");
+      }
+      const user = await User.getDetail(username);
       return user;
     },
   },
@@ -112,7 +114,7 @@ const resolvers = {
       if (!username || !password)
         throw new Error("Invalid username or password");
 
-      const user = await User.findUser(username);
+      const user = await User.findUsername(username);
       if (!user) throw Error("Invalid username or password");
 
       const checkPassword = comparePassword(password, user.password);

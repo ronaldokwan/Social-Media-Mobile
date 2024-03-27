@@ -50,16 +50,20 @@ class User {
     return user;
   }
 
-  static async getDetail(id) {
+  static async getDetail(username) {
+    const user = await this.userCollection().findOne({
+      username,
+    });
+    const { _id } = user;
     const aggregate = [
       {
         $match: {
-          _id: new ObjectId(String(id)),
+          _id: new ObjectId(String(_id)),
         },
       },
       {
         $lookup: {
-          from: "follows",
+          from: "follow",
           localField: "_id",
           foreignField: "followingId",
           as: "followers",
@@ -67,7 +71,7 @@ class User {
       },
       {
         $lookup: {
-          from: "users",
+          from: "user",
           localField: "followers.followerId",
           foreignField: "_id",
           as: "followerDetail",
@@ -75,7 +79,7 @@ class User {
       },
       {
         $lookup: {
-          from: "follows",
+          from: "follow",
           localField: "_id",
           foreignField: "followerId",
           as: "followings",
@@ -83,7 +87,7 @@ class User {
       },
       {
         $lookup: {
-          from: "users",
+          from: "user",
           localField: "followings.followingId",
           foreignField: "_id",
           as: "followingDetail",
@@ -101,7 +105,7 @@ class User {
         },
       },
     ];
-    const cursor = await this.userCollection.aggregate(aggregate);
+    const cursor = this.userCollection().aggregate(aggregate);
     const result = await cursor.toArray();
     return result[0];
   }
