@@ -1,5 +1,4 @@
-import { GraphQLError } from "graphql";
-
+import Posts from "../models/posts.js";
 const typeDefs = `#graphql
     type Posts {
         _id: ID
@@ -30,57 +29,73 @@ const typeDefs = `#graphql
         content: String!
         tags: [String]
         imgUrl: String
-        authorId: ID!
-        comments: [AddComments]
-        likes: [AddLikes]
     }
 
-    input AddComments {
+    input AddComments{
+        _id: ID!
         content: String!
-        username: String!
-    }
-
-    input AddLikes {
-        username: String!
     }
 
     type Query {
-        posts: [Posts]
-        postsById(id: ID): Posts
+        postsByDate: [Posts]
+        postsById(_id: ID): Posts
     }
     
     type Mutation {
         addPosts(addPosts:AddPosts): Posts
         addComments(addComments:AddComments): Posts
-        addLikes(addLikes:AddLikes): Posts
+        addLikes: Posts
     }
 `;
 
 const resolvers = {
   Query: {
-    posts: (_, __, contextValue) => {
+    postsByDate: async (_, __, contextValue) => {
       contextValue.auth();
-      posts;
+      const posts = await Posts.findByDate();
+      return posts;
     },
-    postsById: (_, { id }, contextValue) => {
+    postsById: async (_, { _id }, contextValue) => {
       contextValue.auth();
-      if (!id) {
-        throw new GraphQLError("No ID provided", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-            http: { statusCode: 400 },
-          },
-        });
+      if (!_id) {
+        throw new Error("No ID provided");
       }
-      return posts.find((posts) => posts.id === id);
+      const posts = await Posts.findById(_id);
+      if (!posts) {
+        throw new Error("No post found");
+      }
+      return posts;
     },
   },
   Mutation: {
-    addPosts: (_, { content, tags }, contextValue) => {
-      contextValue.auth();
-      const newPosts = { id: posts.length + 1, content, tags };
-      posts.push(newPosts);
-      return newPosts;
+    addPosts: async (_, { addPosts }, contextValue) => {
+      const { _id } = contextValue.auth();
+      const { content, tags, imgUrl } = addPosts;
+      if (!content) {
+        throw new Error("content is required");
+      }
+      const authorId = _id;
+      const posts = await Posts.create({
+        content,
+        tags,
+        imgUrl,
+        authorId,
+      });
+      console.log(posts);
+      return posts;
+    },
+    addComments: async (_, { addComments }, contextValue) => {
+      const { username } = contextValue.auth();
+      const { _id, content } = addComments;
+      if (!_id || !content) {
+        throw new Error("post id and content are required");
+      }
+      const posts = await Posts.createComments({
+        _id,
+        content,
+        username,
+      });
+      return posts;
     },
   },
 };

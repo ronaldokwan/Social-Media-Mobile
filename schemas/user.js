@@ -47,8 +47,8 @@ const typeDefs = `#graphql
 
     type Query {
         user(name: String, username: String): UserDetail
-        userById(id: ID): User
-        getDetail(id: ID): User
+        userById(_id: ID): User
+        getDetail(_id: ID): User
     }
 
     type Mutation {
@@ -71,17 +71,14 @@ const resolvers = {
         throw new Error("name or username required");
       }
     },
-    userById: (_, { id }, contextValue) => {
+    userById: async (_, { _id }, contextValue) => {
       contextValue.auth();
-      if (!id) {
-        throw new Error("No ID provided", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-            http: { statusCode: 400 },
-          },
-        });
+      if (!_id) {
+        throw new Error("No ID provided");
       }
-      return follows.find((follow) => follow.id === id);
+      const user = await User.findId(_id);
+      if (!user) throw new Error("User not found");
+      return user;
     },
     getDetail: async (_, args, contextValue) => {
       contextValue.auth();
@@ -127,6 +124,7 @@ const resolvers = {
           username: user.username,
         }),
       };
+
       return token;
     },
   },

@@ -42,6 +42,14 @@ class User {
     return user;
   }
 
+  static async findId(_id) {
+    _id = new ObjectId(String(_id));
+    const user = await this.userCollection().findOne({
+      _id,
+    });
+    return user;
+  }
+
   static async getDetail(id) {
     const aggregate = [
       {

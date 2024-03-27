@@ -11,7 +11,6 @@ const typeDefs = `#graphql
 
     input AddFollow {
         followingId: ID
-        followerId: ID
     }
 
     type Query {
@@ -45,10 +44,11 @@ const resolvers = {
   },
   Mutation: {
     addFollow: async (_, { addFollow }, contextValue) => {
-      contextValue.auth();
-      const { followingId, followerId } = addFollow;
-      if (!followingId && !followerId) {
-        throw new Error("followingId and followerId is required");
+      const { _id } = contextValue.auth();
+      const followerId = _id;
+      const { followingId } = addFollow;
+      if (!followingId) {
+        throw new Error("followingId is required");
       }
       const newFollow = await Follow.create({ followingId, followerId });
       return newFollow;
