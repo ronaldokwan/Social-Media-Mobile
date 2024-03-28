@@ -1,4 +1,5 @@
 import Follow from "../models/follow.js";
+import { gql } from "graphql-tag";
 
 const typeDefs = gql`
   type Follow {

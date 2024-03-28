@@ -2,6 +2,7 @@ import validator from "validator";
 import User from "../models/user.js";
 import { signToken } from "../helpers/jwt.js";
 import { comparePassword } from "../helpers/bcrypt.js";
+import { gql } from "graphql-tag";
 
 const typeDefs = gql`
   type User {
