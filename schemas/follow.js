@@ -1,21 +1,21 @@
 import Follow from "../models/follow.js";
 
-const typeDefs = `#graphql
-    type Follow {
-        _id: ID
-        followingId: ID
-        followerId: ID
-        createdAt: String
-        updatedAt: String
-    }
+const typeDefs = gql`
+  type Follow {
+    _id: ID
+    followingId: ID
+    followerId: ID
+    createdAt: String
+    updatedAt: String
+  }
 
-    input AddFollow {
-        followingId: ID
-    }
+  input AddFollow {
+    followingId: ID
+  }
 
-    type Mutation {
-        addFollow(addFollow:AddFollow): Follow
-    }
+  type Mutation {
+    addFollow(addFollow: AddFollow): Follow
+  }
 `;
 
 const resolvers = {

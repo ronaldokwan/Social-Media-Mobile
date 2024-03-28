@@ -1,72 +1,72 @@
 import Posts from "../models/posts.js";
 import redis from "../config/redis.js";
 
-const typeDefs = `#graphql
-    type Posts {
-        _id: ID
-        content: String!
-        tags: [String]
-        imgUrl: String
-        authorId: ID!
-        comments: [Comments]
-        likes: [Likes]
-        createdAt: String
-        updatedAt: String
-    }
+const typeDefs = gql`
+  type Posts {
+    _id: ID
+    content: String!
+    tags: [String]
+    imgUrl: String
+    authorId: ID!
+    comments: [Comments]
+    likes: [Likes]
+    createdAt: String
+    updatedAt: String
+  }
 
-    type PostsDetail {
-        _id: ID
-        content: String!
-        tags: [String]
-        imgUrl: String
-        comments: [Comments]
-        likes: [Likes]
-        createdAt: String
-        updatedAt: String
-        authorDetail: [AuthorDetail]
-    }
+  type PostsDetail {
+    _id: ID
+    content: String!
+    tags: [String]
+    imgUrl: String
+    comments: [Comments]
+    likes: [Likes]
+    createdAt: String
+    updatedAt: String
+    authorDetail: [AuthorDetail]
+  }
 
-    type AuthorDetail {
-        _id: ID
-        name: String
-        username: String
-        email: String
-    }
+  type AuthorDetail {
+    _id: ID
+    name: String
+    username: String
+    email: String
+  }
 
-    type Comments {
-        content: String!
-        username: String!
-        createdAt: String
-        updatedAt: String
-    }
+  type Comments {
+    content: String!
+    username: String!
+    createdAt: String
+    updatedAt: String
+  }
 
-    type Likes {
-        username: String!
-        createdAt: String
-        updatedAt: String
-    }
+  type Likes {
+    username: String!
+    createdAt: String
+    updatedAt: String
+  }
 
-    input AddPosts {
-        content: String!
-        tags: [String]
-        imgUrl: String
-    }
+  input AddPosts {
+    content: String!
+    tags: [String]
+    imgUrl: String
+  }
 
-    input AddComments{
-        _id: ID!
-        content: String!
-    }
+  input AddComments {
+    _id: ID!
+    content: String!
+  }
 
-    type Query {
-        postsByDate: [PostsDetail]
-        postsById(_id: ID!): PostsDetail
-    }
-    
-    type Mutation {
-        addPosts(addPosts:AddPosts): Posts
-        addComments(addComments:AddComments): Posts
-        addLikes( _id: ID!): Posts
-    }
+  type Query {
+    postsByDate: [PostsDetail]
+    postsById(_id: ID!): PostsDetail
+  }
+
+  type Mutation {
+    addPosts(addPosts: AddPosts): Posts
+    addComments(addComments: AddComments): Posts
+    addLikes(_id: ID!): Posts
+  }
 `;
 
 const resolvers = {

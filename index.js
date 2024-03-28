@@ -21,7 +21,7 @@ const server = new ApolloServer({
 });
 
 const { url } = await startStandaloneServer(server, {
-  listen: { port: 3000 },
+  listen: { port: process.env.PORT || 3000 },
   context: ({ req, res }) => {
     return {
       auth: () => {

@@ -3,56 +3,56 @@ import User from "../models/user.js";
 import { signToken } from "../helpers/jwt.js";
 import { comparePassword } from "../helpers/bcrypt.js";
 
-const typeDefs = `#graphql
-    type User {
-        _id: ID
-        name: String
-        username: String!
-        email: String!
-        password:String!
-    }
+const typeDefs = gql`
+  type User {
+    _id: ID
+    name: String
+    username: String!
+    email: String!
+    password: String!
+  }
 
-    type UserFollow {
-        _id: ID
-        name: String
-        username: String!
-        email: String!
-        followerDetail: [UserDetail]
-        followingDetail: [UserDetail]
-    }
+  type UserFollow {
+    _id: ID
+    name: String
+    username: String!
+    email: String!
+    followerDetail: [UserDetail]
+    followingDetail: [UserDetail]
+  }
 
-    type UserDetail {
-        _id: ID
-        name: String
-        username: String
-        email: String
-    }
+  type UserDetail {
+    _id: ID
+    name: String
+    username: String
+    email: String
+  }
 
-    type Token {
-        access_token: String
-    }
+  type Token {
+    access_token: String
+  }
 
-    input Register {
-        name: String
-        username: String!
-        email: String!
-        password:String!
-    }
+  input Register {
+    name: String
+    username: String!
+    email: String!
+    password: String!
+  }
 
-    input Login {
-        username: String!
-        password:String!
-    }
+  input Login {
+    username: String!
+    password: String!
+  }
 
-    type Query {
-        userById(_id: ID): User
-        userDetail(username: String): UserFollow
-    }
+  type Query {
+    userById(_id: ID): User
+    userDetail(username: String): UserFollow
+  }
 
-    type Mutation {
-        register(register:Register): UserDetail
-        login(login:Login): Token
-    }
+  type Mutation {
+    register(register: Register): UserDetail
+    login(login: Login): Token
+  }
 `;
 
 const resolvers = {
