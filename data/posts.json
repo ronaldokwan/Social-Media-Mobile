@@ -4,27 +4,8 @@
     "tags": ["blogging", "writing"],
     "imgUrl": "https://example.com/post-image-1.jpg",
     "authorId": "1",
-    "comments": [
-      {
-        "content": "Great post!",
-        "username": "janesmith"
-      },
-      {
-        "content": "I have a question about this...",
-        "username": "bobthomas"
-      }
-    ],
-    "likes": [
-      {
-        "username": "janesmith"
-      },
-      {
-        "username": "davidwilson"
-      },
-      {
-        "username": "emilychen"
-      }
-    ]
+    "comments": [],
+    "likes": []
   },
   {
     "content": "Check out my latest travel adventure!",
@@ -32,32 +13,13 @@
     "imgUrl": "https://example.com/post-image-2.jpg",
     "authorId": "2",
     "comments": [],
-    "likes": [
-      {
-        "username": "johndoe"
-      },
-      {
-        "username": "bobthomas"
-      }
-    ]
+    "likes": []
   },
   {
     "content": "My thoughts on the latest tech trends.",
     "tags": ["tech", "trends"],
     "authorId": "3",
-    "comments": [
-      {
-        "content": "Interesting perspective!",
-        "username": "johndoe"
-      }
-    ],
-    "likes": [
-      {
-        "username": "janesmith"
-      },
-      {
-        "username": "davidwilson"
-      }
-    ]
+    "comments": [],
+    "likes": []
   }
 ]

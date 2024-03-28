@@ -7,8 +7,6 @@ async function seeding() {
   const users = data;
   const newUsers = users.map((user) => {
     user.password = hashPassword(user.password);
-    user.createdAt = new Date();
-    user.updatedAt = new Date();
     return user;
   });
   await userDB.insertMany(newUsers);
