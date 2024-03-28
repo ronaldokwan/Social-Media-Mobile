@@ -3,11 +3,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const redis = new Redis({
-  host: "redis-12659.c252.ap-southeast-1-1.ec2.cloud.redislabs.com",
-  port: 12659,
-  username: "default",
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  username: process.env.REDIS_USERNAME,
   password: process.env.REDIS_PASSWORD,
-  db: 0,
+  db: process.env.REDIS_DB,
 });
 
 export default redis;
