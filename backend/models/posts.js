@@ -1,5 +1,5 @@
-import database from "../config/mongodb.js";
 import { ObjectId } from "mongodb";
+import database from "../config/mongodb.js";
 
 class Posts {
   static postsCollection() {

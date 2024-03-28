@@ -1,18 +1,18 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { verifyToken } from "./helpers/jwt.js";
 import {
-  typeDefs as typeDefsUser,
-  resolvers as resolversUser,
-} from "./schemas/user.js";
+  resolvers as resolversFollow,
+  typeDefs as typeDefsFollow,
+} from "./schemas/follow.js";
 import {
-  typeDefs as typeDefsPosts,
   resolvers as resolversPosts,
+  typeDefs as typeDefsPosts,
 } from "./schemas/posts.js";
 import {
-  typeDefs as typeDefsFollow,
-  resolvers as resolversFollow,
-} from "./schemas/follow.js";
-import { verifyToken } from "./helpers/jwt.js";
+  resolvers as resolversUser,
+  typeDefs as typeDefsUser,
+} from "./schemas/user.js";
 
 const server = new ApolloServer({
   typeDefs: [typeDefsUser, typeDefsPosts, typeDefsFollow],

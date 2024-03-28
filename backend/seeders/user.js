@@ -1,6 +1,6 @@
 import database from "../config/mongodb.js";
-import { hashPassword } from "../helpers/bcrypt.js";
 import data from "../data/user.json" assert { type: "json" };
+import { hashPassword } from "../helpers/bcrypt.js";
 
 async function seeding() {
   const userDB = database.collection("user");

@@ -1,5 +1,5 @@
-import Follow from "../models/follow.js";
 import { gql } from "graphql-tag";
+import Follow from "../models/follow.js";
 
 const typeDefs = gql`
   type Follow {
@@ -34,4 +34,4 @@ const resolvers = {
   },
 };
 
-export { typeDefs, resolvers };
+export { resolvers, typeDefs };

@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-const Stack = createNativeStackNavigator();
-
-import Login from "../screens/Login";
 import Detail from "../screens/Detail";
+import Login from "../screens/Login";
 import TabNavigator from "./TabNavigator";
+
+const Stack = createNativeStackNavigator();
 
 function StackNavigator() {
   return (

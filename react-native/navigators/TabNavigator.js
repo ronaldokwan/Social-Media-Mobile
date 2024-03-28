@@ -1,12 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-const Tab = createBottomTabNavigator();
-
-// Use Tab.Navigator and Tab.Screen to create your tab navigation
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Home from "../screens/Home";
 import Profile from "../screens/Profile";
 
+const Tab = createBottomTabNavigator();
 function TabNavigator() {
   return (
     <Tab.Navigator

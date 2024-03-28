@@ -1,6 +1,6 @@
-import Posts from "../models/posts.js";
-import redis from "../config/redis.js";
 import { gql } from "graphql-tag";
+import redis from "../config/redis.js";
+import Posts from "../models/posts.js";
 
 const typeDefs = gql`
   type Posts {
@@ -145,4 +145,4 @@ const resolvers = {
   },
 };
 
-export { typeDefs, resolvers };
+export { resolvers, typeDefs };
