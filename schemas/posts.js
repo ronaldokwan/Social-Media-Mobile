@@ -14,6 +14,25 @@ const typeDefs = `#graphql
         updatedAt: String
     }
 
+    type PostsDetail {
+        _id: ID
+        content: String!
+        tags: [String]
+        imgUrl: String
+        comments: [Comments]
+        likes: [Likes]
+        createdAt: String
+        updatedAt: String
+        authorDetail: [AuthorDetail]
+    }
+
+    type AuthorDetail {
+        _id: ID
+        name: String
+        username: String
+        email: String
+    }
+
     type Comments {
         content: String!
         username: String!
@@ -39,8 +58,8 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        postsByDate: [Posts]
-        postsById(_id: ID!): Posts
+        postsByDate: [PostsDetail]
+        postsById(_id: ID!): PostsDetail
     }
     
     type Mutation {
@@ -54,7 +73,6 @@ const resolvers = {
   Query: {
     postsByDate: async (_, __, contextValue) => {
       contextValue.auth();
-
       const redisPosts = await redis.get("posts");
       if (redisPosts) {
         console.log("from redis");
@@ -66,6 +84,7 @@ const resolvers = {
         return posts;
       }
     },
+
     postsById: async (_, { _id }, contextValue) => {
       contextValue.auth();
       if (!_id) {
@@ -75,6 +94,7 @@ const resolvers = {
       if (!posts) {
         throw new Error("No post found");
       }
+      console.log(posts);
       return posts;
     },
   },

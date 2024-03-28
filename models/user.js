@@ -5,28 +5,18 @@ class User {
   static userCollection() {
     return database.collection("user");
   }
-
-  static async findName(name) {
-    const user = await this.userCollection().findOne({
-      name,
-    });
-    return user;
-  }
-
   static async findUsername(username) {
     const user = await this.userCollection().findOne({
       username,
     });
     return user;
   }
-
   static async findEmail(email) {
     const user = await this.userCollection().findOne({
       email,
     });
     return user;
   }
-
   static async create(data) {
     let { name, username, email, password } = data;
     password = hashPassword(password);
@@ -41,7 +31,6 @@ class User {
     });
     return user;
   }
-
   static async findId(_id) {
     _id = new ObjectId(String(_id));
     const user = await this.userCollection().findOne({
@@ -49,7 +38,6 @@ class User {
     });
     return user;
   }
-
   static async getDetail(username) {
     const user = await this.userCollection().findOne({
       username,

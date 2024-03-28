@@ -45,7 +45,6 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        user(name: String, username: String): UserDetail
         userById(_id: ID): User
         userDetail(username: String): UserFollow
     }
@@ -58,18 +57,6 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    user: async (_, { name, username }, contextValue) => {
-      contextValue.auth();
-      if (name && username) {
-        throw new Error("name or username only allowed");
-      } else if (name) {
-        return await User.findName(name);
-      } else if (username) {
-        return await User.findUsername(username);
-      } else {
-        throw new Error("name or username required");
-      }
-    },
     userById: async (_, { _id }, contextValue) => {
       contextValue.auth();
       if (!_id) {

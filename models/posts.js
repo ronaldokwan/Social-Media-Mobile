@@ -9,6 +9,7 @@ class Posts {
   static async create({ content, tags, imgUrl, authorId }) {
     const createdAt = new Date();
     const updatedAt = new Date();
+    authorId = new ObjectId(String(authorId));
     const newPosts = await this.postsCollection().insertOne({
       content,
       tags,
@@ -25,18 +26,41 @@ class Posts {
     return posts;
   }
   static async findByDate() {
-    const posts = await this.postsCollection()
-      .find()
-      .sort({ updatedAt: -1 })
-      .toArray();
+    const aggregate = [
+      {
+        $lookup: {
+          from: "user",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "authorDetail",
+        },
+      },
+      {
+        $sort: { updatedAt: -1 },
+      },
+    ];
+
+    const posts = await this.postsCollection().aggregate(aggregate).toArray();
     return posts;
   }
   static async findById(_id) {
     _id = new ObjectId(String(_id));
-    const post = await this.postsCollection().findOne({
-      _id,
-    });
-    return post;
+    const aggregate = [
+      {
+        $match: { _id },
+      },
+      {
+        $lookup: {
+          from: "user",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "authorDetail",
+        },
+      },
+    ];
+
+    const post = await this.postsCollection().aggregate(aggregate).toArray();
+    return post[0];
   }
   static async createComments({ _id, content, username }) {
     const post = await this.findById(_id);
