@@ -58,6 +58,7 @@ export default function Login({ navigation }) {
         disabled={loading}
         loading={loading}
       /> */}
+      <Text>Don't have an account?</Text>
       <Button
         title="Register"
         onPress={() => {
