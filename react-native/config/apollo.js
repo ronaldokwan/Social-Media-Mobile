@@ -1,11 +1,9 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import * as SecureStore from "expo-secure-store";
-import dotenv from "dotenv";
-dotenv.config();
 
 const httpLink = createHttpLink({
-  uri: process.env.URL,
+  uri: "https://youtube.ronaldokwan.online/",
 });
 
 const authLink = setContext(async (_, { headers }) => {

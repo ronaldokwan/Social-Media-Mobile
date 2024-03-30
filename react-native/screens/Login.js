@@ -1,69 +1,80 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
-// import { gql, useMutation } from "@apollo/client";
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { gql, useMutation } from "@apollo/client";
+import * as SecureStore from "expo-secure-store";
+import { AuthContext } from "../context/AuthContext";
 
-// const LOGIN = gql`
-//   mutation Login($login: LoginInput!) {
-//     login(login: $login) {
-//       access_token
-//     }
-//   }
-// `;
+const LOGIN = gql`
+  mutation Login($login: Login) {
+    login(login: $login) {
+      access_token
+    }
+  }
+`;
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [loginMutation, { loading, error }] = useMutation(LOGIN);
+  const { setIsSignedIn } = useContext(AuthContext);
+  const [loginFunction, { error, loading, data }] = useMutation(LOGIN, {
+    onCompleted: async (data) => {
+      await SecureStore.setItemAsync("access_token", data?.login.access_token);
+      setIsSignedIn(true);
+    },
+  });
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const { data } = await loginMutation({
-  //       variables: {
-  //         login: {
-  //           username,
-  //           password,
-  //         },
-  //       },
-  //     });
-  //     const { access_token } = data.login;
-  //     // Handle the access_token as needed (e.g., store it in AsyncStorage)
-  //     console.log("Access Token:", access_token);
-  //     // Navigate to the Home screen after successful login
-  //     navigation.navigate("Home");
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     // Handle the error as needed (e.g., display an error message)
-  //   }
-  // };
+  function handleLogin() {
+    loginFunction({
+      variables: {
+        login: {
+          username,
+          password,
+        },
+      },
+    }).catch((error) => {
+      console.error("An error occurred while logging in:", error);
+    });
+  }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Login Screen</Text>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-      {/* <Button
-        title="Login"
-        // onPress={handleLogin}
-        disabled={loading}
-        loading={loading}
-      /> */}
-      <Button
-        title="Register"
-        onPress={() => {
-          navigation.navigate("Register");
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
-    </View>
+      >
+        <TextInput
+          placeholder="Username"
+          onChangeText={(text) => setUsername(text)}
+        />
+        <TextInput
+          placeholder="Password"
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry={true}
+        />
+        <TouchableOpacity onPress={() => handleLogin()}>
+          <Text>Login</Text>
+        </TouchableOpacity>
+        <Text variant="titleMedium">or</Text>
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            variant="titleLarge"
+            onPress={() => {
+              navigation.navigate("Register");
+            }}
+          >
+            Create new account
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }

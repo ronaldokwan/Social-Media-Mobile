@@ -3,16 +3,15 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "../screens/Login";
 import Home from "../screens/Home";
 import Detail from "../screens/Detail";
-import Register from "../screens/Register";
 import LogoutButton from "../components/LogoutButton.js";
-import CreatePost from "../screens/CreatePost";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import * as SecureStore from "expo-secure-store";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.js";
+
 const Stack = createNativeStackNavigator();
 
-export default function StackNavigator() {
-  const [isSignedIn, setIsSignedIn] = useState(AuthContext);
+export default function MainStack() {
+  const [isSignedIn, setIsSignedIn] = useState(false);
   (async () => {
     const token = await SecureStore.getItemAsync("access_token");
     if (token) {
@@ -26,6 +25,16 @@ export default function StackNavigator() {
           {isSignedIn ? (
             <>
               <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen
                 name="Home"
                 options={{
                   headerRight: () => <LogoutButton />,
@@ -33,23 +42,6 @@ export default function StackNavigator() {
                 component={Home}
               />
               <Stack.Screen name="Detail" component={Detail} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="Register"
-                component={Register}
-                options={{
-                  headerShown: false,
-                }}
-              />
             </>
           )}
         </Stack.Navigator>

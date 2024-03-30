@@ -1,58 +1,87 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { gql, useMutation } from "@apollo/client";
+
+const REGISTER = gql`
+  mutation Register($register: Register) {
+    register(register: $register) {
+      email
+      name
+      username
+    }
+  }
+`;
 
 export default function Register({ navigation }) {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [registerFunction, { error, loading, data }] = useMutation(REGISTER, {
+    onCompleted: async (data) => {
+      navigation.navigate("Login");
+    },
+  });
+
+  function handleRegister() {
+    registerFunction({
+      variables: {
+        register: {
+          email,
+          name,
+          username,
+          password,
+        },
+      },
+    }).catch((error) => {
+      console.error("An error occurred while registering in:", error);
+    });
+  }
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Register Screen</Text>
-
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        secureTextEntry
-        style={{ width: 200, height: 40, borderColor: "gray", borderWidth: 1 }}
-      />
-
-      <Button
-        title="Register"
-        onPress={() => {
-          navigation.navigate("Login");
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
         }}
-      />
-
-      <Button
-        title="Login"
-        onPress={() => {
-          navigation.navigate("Login");
-        }}
-      />
-    </View>
+      >
+        <TextInput
+          placeholder="Email"
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput placeholder="Name" onChangeText={(text) => setName(text)} />
+        <TextInput
+          placeholder="Username"
+          onChangeText={(text) => setUsername(text)}
+        />
+        <TextInput
+          placeholder="Password"
+          onChangeText={(text) => setPassword(text)}
+          secureTextEntry={true}
+        />
+        <TouchableOpacity onPress={() => handleRegister()}>
+          <Text>Register</Text>
+        </TouchableOpacity>
+        <Text variant="titleMedium">or</Text>
+        <TouchableOpacity
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            variant="titleLarge"
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            Back to Login
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
