@@ -15,12 +15,6 @@ function Home({ navigation }) {
           })
         }
       />
-      <Button
-        title="Logout"
-        onPress={() => {
-          navigation.navigate("Login");
-        }}
-      ></Button>
     </View>
   );
 }
