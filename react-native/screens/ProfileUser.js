@@ -38,9 +38,7 @@ const ProfileScreen = () => {
           console.error("Error refetching data:", error.message);
         }
       };
-
       refetchData();
-
       return () => {};
     }, [])
   );
@@ -55,23 +53,25 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Profile</Text>
       <Text style={styles.label}>Username:</Text>
-      <Text>{username}</Text>
+      <Text style={styles.value}>{username}</Text>
       <Text style={styles.label}>Name:</Text>
-      <Text>{name}</Text>
+      <Text style={styles.value}>{name}</Text>
       <Text style={styles.label}>Email:</Text>
-      <Text>{email}</Text>
-
+      <Text style={styles.value}>{email}</Text>
       <Text style={styles.sectionTitle}>Following:</Text>
-      <View>
+      <View style={styles.userList}>
         {followingDetail.map((user) => (
-          <Text key={user._id}>{user.username}</Text>
+          <Text key={user._id} style={styles.userText}>
+            {user.username}
+          </Text>
         ))}
       </View>
-
       <Text style={styles.sectionTitle}>Followers:</Text>
-      <View>
+      <View style={styles.userList}>
         {followerDetail.map((user) => (
-          <Text key={user._id}>{user.username}</Text>
+          <Text key={user._id} style={styles.userText}>
+            {user.username}
+          </Text>
         ))}
       </View>
     </View>
@@ -82,20 +82,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginBottom: 20,
+    color: "#ff0000",
   },
   label: {
     fontWeight: "bold",
     marginTop: 10,
+    color: "#555",
+  },
+  value: {
+    marginBottom: 10,
   },
   sectionTitle: {
     fontWeight: "bold",
     marginTop: 20,
     fontSize: 18,
+    color: "#ff0000",
+  },
+  userList: {
+    marginTop: 10,
+    marginLeft: 20,
+  },
+  userText: {
+    marginBottom: 5,
   },
 });
 

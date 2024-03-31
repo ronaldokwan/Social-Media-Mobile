@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  Alert,
+  Image,
+} from "react-native";
 import { gql, useMutation } from "@apollo/client";
 
 const CREATE_POST = gql`
@@ -63,7 +71,6 @@ const CreatePost = ({ navigation }) => {
     tags: "",
     imgUrl: "",
   });
-
   const [createPost, { loading, error }] = useMutation(CREATE_POST, {
     onError: (error) => {
       Alert.alert("Error", error.message);
@@ -88,7 +95,7 @@ const CreatePost = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Create Post</Text>
+      <Text style={styles.title}>Create Post</Text>
       <TextInput
         placeholder="Enter content"
         onChangeText={(text) =>
@@ -113,9 +120,17 @@ const CreatePost = ({ navigation }) => {
         value={postInput.imgUrl}
         style={styles.input}
       />
-      <Button title="Create Post" onPress={handleCreatePost} />
-      {loading && <Text>Loading...</Text>}
-      {error && <Text>Error: {error.message}</Text>}
+      {postInput.imgUrl && (
+        <Image source={{ uri: postInput.imgUrl }} style={styles.image} />
+      )}
+      <Button
+        title="Create Post"
+        onPress={handleCreatePost}
+        color="#ff0000"
+        style={styles.button}
+      />
+      {loading && <Text style={styles.loadingText}>Loading...</Text>}
+      {error && <Text style={styles.errorText}>Error: {error.message}</Text>}
     </View>
   );
 };
@@ -124,12 +139,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ff0000",
+    marginBottom: 16,
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     padding: 8,
     marginBottom: 16,
+    borderRadius: 4,
+  },
+  image: {
+    width: "100%",
+    height: 200,
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: "#ff0000",
+    borderRadius: 4,
+  },
+  loadingText: {
+    marginTop: 16,
+    color: "#666",
+  },
+  errorText: {
+    marginTop: 16,
+    color: "#ff0000",
   },
 });
 

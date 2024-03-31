@@ -48,6 +48,7 @@ export default function Register({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
+        <Text style={styles.title}>YouTube</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -94,17 +95,24 @@ export default function Register({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   },
   innerContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#ff0000",
+    marginBottom: 24,
+  },
   input: {
     width: "80%",
     height: 40,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#ccc",
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
   button: {
     width: "80%",
     height: 40,
-    backgroundColor: "blue",
+    backgroundColor: "#ff0000",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
@@ -124,13 +132,14 @@ const styles = StyleSheet.create({
   },
   orText: {
     marginBottom: 20,
+    color: "#999",
   },
   loginButton: {
     justifyContent: "center",
     alignItems: "center",
   },
   loginButtonText: {
-    color: "blue",
+    color: "#ff0000",
     fontSize: 16,
     fontWeight: "bold",
   },

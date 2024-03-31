@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -132,10 +132,12 @@ const PostCard = ({ post }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.username}>{post.authorDetail.username}</Text>
         <Image source={{ uri: post.imgUrl }} style={styles.image} />
+        <View style={styles.userInfo}>
+          <Text style={styles.username}>{post.authorDetail.username}</Text>
+          <Text style={styles.content}>{post.content}</Text>
+        </View>
       </View>
-      <Text style={styles.content}>{post.content}</Text>
       <View style={styles.likesCommentsContainer}>
         <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
           <Text style={styles.likeButtonText}>{post.likes.length} Likes</Text>
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
     marginBottom: 16,
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -184,22 +187,32 @@ const styles = StyleSheet.create({
   },
   username: {
     fontWeight: "bold",
-    marginRight: 8,
+    marginBottom: 4,
   },
   image: {
     width: 50,
     height: 50,
     borderRadius: 25,
+    marginRight: 8,
+  },
+  userInfo: {
+    flex: 1,
   },
   content: {
-    marginBottom: 16,
+    marginBottom: 8,
   },
   likesCommentsContainer: {
     marginBottom: 16,
   },
-  likesCount: {
-    fontWeight: "bold",
+  likeButton: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
+  },
+  likeButtonText: {
+    fontWeight: "bold",
+    marginRight: 8,
+    color: "#ff0000",
   },
   commentContainer: {
     marginBottom: 8,
@@ -220,7 +233,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   commentButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#ff0000",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -228,15 +241,6 @@ const styles = StyleSheet.create({
   commentButtonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  likeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  likeButtonText: {
-    fontWeight: "bold",
-    marginRight: 8,
   },
 });
 

@@ -40,14 +40,10 @@ const MUTATION_ADD_FOLLOW = gql`
 const SearchUser = () => {
   const [username, setUsername] = useState("");
   const [isFollowed, setIsFollowed] = useState(false);
-
   const { loading, error, data, refetch } = useQuery(QUERY_USER_DETAIL, {
     variables: { username },
-    // Consider error handling and loading state in the UI
   });
-
   const [addFollow] = useMutation(MUTATION_ADD_FOLLOW, {
-    // Handle potential errors during mutation
     onError: (error) => Alert.alert("Error following user:", error.message),
   });
 
@@ -67,33 +63,40 @@ const SearchUser = () => {
   const handleSearch = () => {
     setIsFollowed(false);
     setUsername("");
-    // Consider refetching data to clear previous results
     refetch();
   };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Search User</Text>
       <TextInput
         placeholder="Search user by username"
         value={username}
         onChangeText={(text) => setUsername(text)}
         style={styles.input}
       />
-      <Button title="Reset" onPress={handleSearch} style={styles.button} />
+      <Button
+        title="Reset"
+        onPress={handleSearch}
+        color="#ff0000"
+        style={styles.button}
+      />
       {data && data.userDetail && (
-        <View>
-          <Text style={styles.text}>{data.userDetail.name}</Text>
-          <Text style={styles.text}>{data.userDetail.email}</Text>
+        <View style={styles.userContainer}>
+          <Text style={styles.name}>{data.userDetail.name}</Text>
+          <Text style={styles.email}>{data.userDetail.email}</Text>
           {isFollowed ? (
             <Button
               title="Following"
               disabled={true}
+              color="#ccc"
               style={styles.followingButton}
             />
           ) : (
             <Button
               title="Follow"
               onPress={handleFollow}
+              color="#ff0000"
               style={styles.followButton}
             />
           )}
@@ -109,6 +112,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "#fff",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ff0000",
+    marginBottom: 16,
   },
   input: {
     borderWidth: 1,
@@ -122,19 +132,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "100%",
   },
-  buttonText: {
-    fontSize: 18,
-    color: "#fff",
+  userContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  email: {
+    fontSize: 16,
+    marginBottom: 16,
+    color: "#555",
   },
   followButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#ff0000",
+    borderRadius: 4,
   },
   followingButton: {
     backgroundColor: "#ccc",
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 5,
+    borderRadius: 4,
   },
 });
 
