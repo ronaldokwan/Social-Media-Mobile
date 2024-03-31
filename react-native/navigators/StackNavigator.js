@@ -2,7 +2,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "../screens/Login";
 import Home from "../screens/Home";
-import Detail from "../screens/Detail";
 import Register from "../screens/Register";
 import LogoutButton from "../components/LogoutButton.js";
 import CreatePost from "../screens/CreatePost";
@@ -32,7 +31,7 @@ export default function StackNavigator() {
                 }}
                 component={Home}
               />
-              <Stack.Screen name="Detail" component={Detail} />
+              <Stack.Screen name="CreatePost" component={CreatePost} />
             </>
           ) : (
             <>

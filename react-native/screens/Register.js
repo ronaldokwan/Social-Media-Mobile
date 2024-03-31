@@ -1,5 +1,11 @@
-import React, { useState, useContext } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { gql, useMutation } from "@apollo/client";
 
@@ -40,40 +46,39 @@ export default function Register({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+    <SafeAreaView style={styles.container}>
+      <View style={styles.innerContainer}>
         <TextInput
+          style={styles.input}
           placeholder="Email"
           onChangeText={(text) => setEmail(text)}
         />
-        <TextInput placeholder="Name" onChangeText={(text) => setName(text)} />
         <TextInput
+          style={styles.input}
+          placeholder="Name"
+          onChangeText={(text) => setName(text)}
+        />
+        <TextInput
+          style={styles.input}
           placeholder="Username"
           onChangeText={(text) => setUsername(text)}
         />
         <TextInput
+          style={styles.input}
           placeholder="Password"
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
-        <TouchableOpacity onPress={() => handleRegister()}>
-          <Text>Register</Text>
-        </TouchableOpacity>
-        <Text variant="titleMedium">or</Text>
         <TouchableOpacity
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.button}
+          onPress={() => handleRegister()}
         >
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+        <Text style={styles.orText}>or</Text>
+        <TouchableOpacity style={styles.loginButton}>
           <Text
-            variant="titleLarge"
+            style={styles.loginButtonText}
             onPress={() => {
               navigation.navigate("Login");
             }}
@@ -85,3 +90,48 @@ export default function Register({ navigation }) {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  input: {
+    width: "80%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  button: {
+    width: "80%",
+    height: 40,
+    backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+  orText: {
+    marginBottom: 20,
+  },
+  loginButton: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loginButtonText: {
+    color: "blue",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
