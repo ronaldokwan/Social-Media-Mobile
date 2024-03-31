@@ -33,10 +33,59 @@ class User {
   }
   static async findId(_id) {
     _id = new ObjectId(String(_id));
-    const user = await this.userCollection().findOne({
-      _id,
-    });
-    return user;
+    const aggregate = [
+      {
+        $match: {
+          _id: new ObjectId(String(_id)),
+        },
+      },
+      {
+        $lookup: {
+          from: "follow",
+          localField: "_id",
+          foreignField: "followingId",
+          as: "followers",
+        },
+      },
+      {
+        $lookup: {
+          from: "user",
+          localField: "followers.followerId",
+          foreignField: "_id",
+          as: "followerDetail",
+        },
+      },
+      {
+        $lookup: {
+          from: "follow",
+          localField: "_id",
+          foreignField: "followerId",
+          as: "followings",
+        },
+      },
+      {
+        $lookup: {
+          from: "user",
+          localField: "followings.followingId",
+          foreignField: "_id",
+          as: "followingDetail",
+        },
+      },
+      {
+        $project: {
+          password: 0,
+          followingDetail: {
+            password: 0,
+          },
+          followerDetail: {
+            password: 0,
+          },
+        },
+      },
+    ];
+    const cursor = this.userCollection().aggregate(aggregate);
+    const result = await cursor.toArray();
+    return result[0];
   }
   static async getDetail(username) {
     const user = await this.userCollection().findOne({

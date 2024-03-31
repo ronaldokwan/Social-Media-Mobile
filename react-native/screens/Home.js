@@ -51,6 +51,11 @@ const HomeScreen = () => {
         title="Search User"
         onPress={() => navigation.navigate("SearchUser")}
       />
+      <Text></Text>
+      <Button
+        title="Profile User"
+        onPress={() => navigation.navigate("ProfileUser")}
+      />
       <FlatList
         data={data.postsByDate}
         keyExtractor={(item) => item._id}

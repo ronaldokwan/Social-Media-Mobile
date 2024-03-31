@@ -46,7 +46,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    userById(_id: ID): User
+    userById: UserFollow
     userDetail(username: String): UserFollow
   }
 
@@ -58,8 +58,8 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    userById: async (_, { _id }, contextValue) => {
-      contextValue.auth();
+    userById: async (_, __, contextValue) => {
+      const { _id } = contextValue.auth();
       if (!_id) {
         throw new Error("No ID provided");
       }

@@ -4,7 +4,6 @@ import { useQuery, useMutation, gql } from "@apollo/client";
 
 const QUERY_USER_DETAIL = gql`
   query Query($username: String!) {
-    # Ensure username is required
     userDetail(username: $username) {
       username
       name
