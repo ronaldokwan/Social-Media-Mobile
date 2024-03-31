@@ -3,7 +3,8 @@ import { View, TextInput, Button, Alert, Text, StyleSheet } from "react-native";
 import { useQuery, useMutation, gql } from "@apollo/client";
 
 const QUERY_USER_DETAIL = gql`
-  query Query($username: String) {
+  query Query($username: String!) {
+    # Ensure username is required
     userDetail(username: $username) {
       username
       name
@@ -26,7 +27,7 @@ const QUERY_USER_DETAIL = gql`
 `;
 
 const MUTATION_ADD_FOLLOW = gql`
-  mutation Mutation($addFollow: AddFollow) {
+  mutation Mutation($addFollow: AddFollow!) {
     addFollow(addFollow: $addFollow) {
       followingId
       followerId
@@ -40,55 +41,69 @@ const MUTATION_ADD_FOLLOW = gql`
 const SearchUser = () => {
   const [username, setUsername] = useState("");
   const [isFollowed, setIsFollowed] = useState(false);
-  const { loading, error, data } = useQuery(QUERY_USER_DETAIL, {
+
+  const { loading, error, data, refetch } = useQuery(QUERY_USER_DETAIL, {
     variables: { username },
+    // Consider error handling and loading state in the UI
   });
 
-  const [addFollow] = useMutation(MUTATION_ADD_FOLLOW);
+  const [addFollow] = useMutation(MUTATION_ADD_FOLLOW, {
+    // Handle potential errors during mutation
+    onError: (error) => Alert.alert("Error following user:", error.message),
+  });
 
-  const handleFollow = () => {
+  const handleFollow = async () => {
     if (data && data.userDetail) {
       const followingId = data.userDetail._id;
-      addFollow({
-        variables: { addFollow: { followingId } },
-      })
-        .then(() => {
-          setIsFollowed(true);
-          Alert.alert("Followed user successfully!");
-        })
-        .catch((error) => {
-          Alert.alert("Error following user:", error.message);
-        });
+      try {
+        await addFollow({ variables: { addFollow: { followingId } } });
+        setIsFollowed(true);
+        Alert.alert("Followed user successfully!");
+      } catch (error) {
+        Alert.alert("Error following user:", error.message);
+      }
     }
   };
 
   const handleSearch = () => {
     setIsFollowed(false);
     setUsername("");
+    // Consider refetching data to clear previous results
+    refetch();
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
         placeholder="Search user by username"
         value={username}
         onChangeText={(text) => setUsername(text)}
+        style={styles.input}
       />
-      <Button title="Reset" onPress={handleSearch} />
+      <Button title="Reset" onPress={handleSearch} style={styles.button} />
       {data && data.userDetail && (
         <View>
-          <Text>{data.userDetail.name}</Text>
-          <Text>{data.userDetail.email}</Text>
+          <Text style={styles.text}>{data.userDetail.name}</Text>
+          <Text style={styles.text}>{data.userDetail.email}</Text>
           {isFollowed ? (
-            <Button title="Following" disabled={true} />
+            <Button
+              title="Following"
+              disabled={true}
+              style={styles.followingButton}
+            />
           ) : (
-            <Button title="Follow" onPress={handleFollow} />
+            <Button
+              title="Follow"
+              onPress={handleFollow}
+              style={styles.followButton}
+            />
           )}
         </View>
       )}
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -123,4 +138,5 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
 export default SearchUser;
