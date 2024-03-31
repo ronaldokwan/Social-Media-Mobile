@@ -90,25 +90,11 @@ const ADD_LIKE = gql`
   }
 `;
 
-const ADD_FOLLOW = gql`
-  mutation Mutation($addFollow: AddFollow) {
-    addFollow(addFollow: $addFollow) {
-      followingId
-      followerId
-      updatedAt
-      createdAt
-      _id
-    }
-  }
-`;
-
 const PostCard = ({ post }) => {
   const [comment, setComment] = useState("");
   const { data, loading, error } = useQuery(GET_POSTS);
   const [addComment] = useMutation(ADD_COMMENT);
   const [addLike] = useMutation(ADD_LIKE);
-  const [addFollow] = useMutation(ADD_FOLLOW);
-  const [isFollowing, setIsFollowing] = useState(false);
 
   const handleCommentSubmit = async () => {
     try {
@@ -140,21 +126,6 @@ const PostCard = ({ post }) => {
     }
   };
 
-  const handleFollow = async () => {
-    try {
-      await addFollow({
-        variables: {
-          addFollow: {
-            followingId: post.authorDetail[0]._id,
-          },
-        },
-      });
-      setIsFollowing(true);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
 
@@ -169,15 +140,6 @@ const PostCard = ({ post }) => {
         <TouchableOpacity style={styles.likeButton} onPress={handleLike}>
           <Text style={styles.likeButtonText}>{post.likes.length} Likes</Text>
         </TouchableOpacity>
-        {isFollowing ? (
-          <TouchableOpacity style={styles.followedButton}>
-            <Text style={styles.followedButtonText}>Followed</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
-            <Text style={styles.followButtonText}>Follow</Text>
-          </TouchableOpacity>
-        )}
         <FlatList
           data={post.comments}
           keyExtractor={(item) => item._id}
@@ -275,18 +237,6 @@ const styles = StyleSheet.create({
   likeButtonText: {
     fontWeight: "bold",
     marginRight: 8,
-  },
-  followButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignSelf: "flex-start",
-    marginTop: 8,
-  },
-  followButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
 });
 

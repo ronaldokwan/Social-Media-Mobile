@@ -46,6 +46,11 @@ const HomeScreen = () => {
         title="Create Post"
         onPress={() => navigation.navigate("CreatePost")}
       />
+      <Text></Text>
+      <Button
+        title="Search User"
+        onPress={() => navigation.navigate("SearchUser")}
+      />
       <FlatList
         data={data.postsByDate}
         keyExtractor={(item) => item._id}
@@ -62,6 +67,30 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  button: {
+    backgroundColor: "#007AFF",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginRight: 16,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  flatListContainer: {
+    flex: 1,
+    marginTop: 8,
   },
 });
 

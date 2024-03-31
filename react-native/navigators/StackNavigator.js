@@ -8,6 +8,7 @@ import CreatePost from "../screens/CreatePost";
 import { useState, useContext } from "react";
 import * as SecureStore from "expo-secure-store";
 import { AuthContext } from "../context/AuthContext";
+import SearchUser from "../screens/SearchUser";
 const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
@@ -32,6 +33,7 @@ export default function StackNavigator() {
                 component={Home}
               />
               <Stack.Screen name="CreatePost" component={CreatePost} />
+              <Stack.Screen name="SearchUser" component={SearchUser} />
             </>
           ) : (
             <>
