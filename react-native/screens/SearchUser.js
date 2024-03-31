@@ -78,7 +78,7 @@ const SearchUser = () => {
       <Button
         title="Reset"
         onPress={handleSearch}
-        color="#ff0000"
+        color="#FF0000"
         style={styles.button}
       />
       {data && data.userDetail && (
@@ -89,14 +89,14 @@ const SearchUser = () => {
             <Button
               title="Following"
               disabled={true}
-              color="#ccc"
+              color="#CCC"
               style={styles.followingButton}
             />
           ) : (
             <Button
               title="Follow"
               onPress={handleFollow}
-              color="#ff0000"
+              color="#FF0000"
               style={styles.followButton}
             />
           )}
@@ -109,20 +109,18 @@ const SearchUser = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#ff0000",
+    color: "#FF0000",
     marginBottom: 16,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#CCC",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -147,11 +145,11 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   followButton: {
-    backgroundColor: "#ff0000",
+    backgroundColor: "#FF0000",
     borderRadius: 4,
   },
   followingButton: {
-    backgroundColor: "#ccc",
+    backgroundColor: "#CCC",
     borderRadius: 4,
   },
 });
