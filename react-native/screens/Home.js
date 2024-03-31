@@ -42,26 +42,30 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Button
-        title="Create Post"
-        onPress={() => navigation.navigate("CreatePost")}
-      />
-      <Text></Text>
-      <Button
-        title="Search User"
-        onPress={() => navigation.navigate("SearchUser")}
-      />
-      <Text></Text>
-      <Button
-        title="Profile User"
-        onPress={() => navigation.navigate("ProfileUser")}
-      />
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Create Post"
+          onPress={() => navigation.navigate("CreatePost")}
+          style={styles.button}
+        />
+        <Button
+          title="Search User"
+          onPress={() => navigation.navigate("SearchUser")}
+          style={styles.button}
+        />
+        <Button
+          title="Profile User"
+          onPress={() => navigation.navigate("ProfileUser")}
+          style={styles.button}
+        />
+      </View>
       <FlatList
         data={data.postsByDate}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
           return <PostCard post={item} />;
         }}
+        style={styles.flatListContainer}
       />
     </View>
   );
@@ -83,15 +87,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    marginRight: 16,
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-    textAlign: "center",
   },
   flatListContainer: {
     flex: 1,

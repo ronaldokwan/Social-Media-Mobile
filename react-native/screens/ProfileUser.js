@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useQuery, gql } from "@apollo/client";
+import { useFocusEffect } from "@react-navigation/native";
 
 const GET_USER_PROFILE = gql`
   query ExampleQuery {
@@ -26,7 +27,23 @@ const GET_USER_PROFILE = gql`
 `;
 
 const ProfileScreen = () => {
-  const { loading, error, data } = useQuery(GET_USER_PROFILE);
+  const { loading, error, data, refetch } = useQuery(GET_USER_PROFILE);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const refetchData = async () => {
+        try {
+          await refetch();
+        } catch (error) {
+          console.error("Error refetching data:", error.message);
+        }
+      };
+
+      refetchData();
+
+      return () => {};
+    }, [])
+  );
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
